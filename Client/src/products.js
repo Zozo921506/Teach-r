@@ -38,7 +38,7 @@ const ProductsDetails = () => {
     };
 
     //Create a loading const
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     //Get the categories and store them in categories
     const getCategories = async () => {
@@ -92,7 +92,7 @@ const ProductsDetails = () => {
         {
             console.log("Produit pas supprimé");
         }
-    }
+    };
 
     //Get the change of the input of a product
     const inputChange = (id, field, value) => {
@@ -126,13 +126,13 @@ const ProductsDetails = () => {
         {
             console.error(e);
         }
-    }
+    };
 
     //Automatically execute functions when the page load
     useEffect(() => {
         getProducts();
         getCategories();
-        setLoading(true);
+        setLoading(false);
     }, [loading]);
 
     return (
@@ -148,7 +148,7 @@ const ProductsDetails = () => {
                     <tr>
                         <th scope='col'>Name</th>
                         <th scope='col'>Description</th>
-                        <th scope='col'>Categorie</th>
+                        <th scope='col'>Catégorie</th>
                         <th scope='col'>Prix</th>
                         <th scope='col'>Date de création</th>
                     </tr>
@@ -165,9 +165,9 @@ const ProductsDetails = () => {
                                 {categories.map((categorie) => {
                                     if (categorie.name !== product.categorie)
                                     {
-                                        return <option value={categorie.name}>{categorie.name}</option>
+                                        return <option value={categorie.name} key={categorie.id}>{categorie.name}</option>
                                     }
-                                    return <></>
+                                    return <option key=''></option>
                                 })}
                             </select>
                         </td>

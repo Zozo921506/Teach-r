@@ -19,7 +19,7 @@ const NewProduct = () => {
     );
 
      //Create a loading const
-     const [loading, setLoading] = useState(false);
+     const [loading, setLoading] = useState(true);
 
     //Stocking the input data to formData
     const change = (e) => {
@@ -58,7 +58,7 @@ const NewProduct = () => {
     
           if (response.ok)
           {
-            console.log("Produit crée avec succès");
+            alert("Produit crée avec succès");
             navigate('/');
           }
           else
@@ -74,7 +74,7 @@ const NewProduct = () => {
 
     useEffect(() => {
         getCategories();
-        setLoading(true);
+        setLoading(false);
     }, [loading]);
 
     return (
