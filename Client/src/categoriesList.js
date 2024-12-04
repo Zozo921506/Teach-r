@@ -18,7 +18,11 @@ const CategoriesList = () => {
         {
             const response = await fetch(url);
             const data = await response.json();
-            setCategories(data);
+            if (!data.message)
+            {
+                setCategories(data);
+            }
+
             console.log(data);
         }
         catch(e)
@@ -111,44 +115,57 @@ const CategoriesList = () => {
 
     return (
         <div>
+            {loading ? (
+                <p className='text-center'>Veuillez patienter</p>
+            ) : (
+                <>
+                    {/* Navbar */}
+                    <nav className="mb-6">
+                        <ul className="flex space-x-4">
+                            <li><Link to='/' className="text-blue-600 font-bold text-2xl mr-6">Teach<span className='text-orange-500'>'</span>r</Link></li>
+                            <li><Link to='/categories' className="text-lg font-semibold text-gray-800 hover:text-blue-500 cursor-pointer">Liste des catégories</Link></li>
+                            {categories ? categories.map((categorie) => (
+                                <li key={categorie.id} className="text-lg font-semibold text-gray-800 hover:text-blue-500 cursor-pointer">
+                                    <Link to={`/categorie/${categorie.name}`}>{categorie.name}</Link>
+                                </li>
+                            )) : (
+                                <></>
+                            )}
+                        </ul>
+                    </nav>
+                    {/* Table of categories */}
+                    <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
+                        <table className="min-w-full table-auto border-collapse">
+                            <thead className="bg-blue-400 text-white">
+                                <tr>
+                                    <th className="px-6 py-3 text-left">Nom de la catégorie</th>
+                                    <th className="px-6 py-3 text-left">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {!categories ? (
+                                    <p>Vous n'avez pas de categories</p>
+                                ) : (
+                                    categories.map((categorie) => (
+                                        <tr key={categorie.id} className="border-b hover:bg-gray-100">
+                                            <td className="px-6 py-3">
+                                                <input
+                                                    className="w-full px-2 py-1 border rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400" value={categorie.name} onChange={(e) => inputChange(categorie.id, "name", e.target.value)}/>
+                                            </td>
+                                            <td className="px-6 py-3 space-x-2">
+                                                <button className="px-4 py-2 bg-blue-400 text-white rounded-md hover:bg-blue-700 focus:outline-none" onClick={(e) => updateCategorie(e, categorie)}>Mettre à jour</button>
+                                                <button className="px-4 py-2 bg-orange-400 text-white rounded-md hover:bg-orange-700 focus:outline-none" onClick={(e) => deleteCategorie(e, categorie.id)}>X</button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                    <button className="px-4 py-2 mt-4 bg-blue-400 text-white rounded-md hover:bg-blue-700 focus:outline-none" onClick={(e) => newProduct(e)}>Ajouter</button>
+                </>
+            )}
             {/* Navbar */}
-            <nav className="mb-6">
-                <ul className="flex space-x-4">
-                    <li><Link to='/' className="text-blue-600 font-bold text-2xl">Teach<span className='text-orange-500'>'</span>r</Link></li>
-                    <li><Link to='/categories' className="text-lg font-semibold text-gray-800 hover:text-blue-500 cursor-pointer">Liste des catégories</Link></li>
-                    {categories.map((categorie) => (
-                        <li key={categorie.id} className="text-lg font-semibold text-gray-800 hover:text-blue-500 cursor-pointer">
-                            <Link to={`/categorie/${categorie.name}`}>{categorie.name}</Link>
-                        </li>
-                    ))}
-                </ul>
-            </nav>
-            {/* Table of categories */}
-            <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
-                <table className="min-w-full table-auto border-collapse">
-                    <thead className="bg-blue-400 text-white">
-                        <tr>
-                            <th className="px-6 py-3 text-left">Nom de la catégorie</th>
-                            <th className="px-6 py-3 text-left">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {categories.map((categorie) => (
-                            <tr key={categorie.id} className="border-b hover:bg-gray-100">
-                                <td className="px-6 py-3">
-                                    <input
-                                        className="w-full px-2 py-1 border rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400" value={categorie.name} onChange={(e) => inputChange(categorie.id, "name", e.target.value)}/>
-                                </td>
-                                <td className="px-6 py-3 space-x-2">
-                                    <button className="px-4 py-2 bg-blue-400 text-white rounded-md hover:bg-blue-700 focus:outline-none" onClick={(e) => updateCategorie(e, categorie)}>Mettre à jour</button>
-                                    <button className="px-4 py-2 bg-orange-400 text-white rounded-md hover:bg-orange-700 focus:outline-none" onClick={(e) => deleteCategorie(e, categorie.id)}>X</button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-            <button className="px-4 py-2 mt-4 bg-blue-400 text-white rounded-md hover:bg-blue-700 focus:outline-none" onClick={(e) => newProduct(e)}>Ajouter</button>
         </div>
     )
 }

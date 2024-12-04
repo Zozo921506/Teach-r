@@ -1,16 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 
-const ProductsDetails = () => {
+const CategorieFilter = () => {
+    //Create a categorie_name
+    const { categorie_name } = useParams();
+
+    //Create a loading const
+    const [loading, setLoading] = useState(true);
+    
     //Create a products const
     const [products, setProducts] = useState([]);
 
     //Create a categories const
     const [categories, setCategories] = useState([]);
 
-    //Get the products and store them in products
+    //Get the products of a categorie and store them in products
     const getProducts = async () => {
-        const url = 'http://localhost:8000/api/products';
+        const url = `http://localhost:8000/api/products/${categorie_name}`;
         try
         {
             const response = await fetch(url);
@@ -19,7 +25,7 @@ const ProductsDetails = () => {
             {
                 setProducts(data);
             }
-
+            
             console.log(data);
         }
         catch(e)
@@ -41,9 +47,6 @@ const ProductsDetails = () => {
             return update;
         }
     };
-
-    //Create a loading const
-    const [loading, setLoading] = useState(true);
 
     //Create a navigate const to redirect
     const navigate = useNavigate();
@@ -140,6 +143,7 @@ const ProductsDetails = () => {
         }
     };
 
+    //Redirect to new_product
     const newProduct = (e) => {
         e.preventDefault();
         navigate('/new_product');
@@ -158,6 +162,7 @@ const ProductsDetails = () => {
                 <p className='text-center'>Veuillez patienter</p>
             ) : (
                 <>
+                
                     {/* Navbar */}
                     <nav className="mb-6">
                         <ul className="flex space-x-4">
@@ -172,6 +177,7 @@ const ProductsDetails = () => {
                             )}
                         </ul>
                     </nav>
+        
                     {/* Set a product table */}
                     <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
                         <table className="min-w-full table-auto border-collapse">
@@ -197,14 +203,12 @@ const ProductsDetails = () => {
                                         <td className="px-6 py-3">
                                             <select className="w-full px-2 py-1 border rounded-md text-white bg-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500" value={product.categorie} onChange={(e) => inputChange(product.id, "categorie", e.target.value)}>
                                                 <option value={product.categorie} className='bg-blue-400'>{product.categorie}</option>
-                                                {categories ? categories.map((categorie) => {
+                                                {categories.map((categorie) => {
                                                     if (categorie.name !== product.categorie) {
                                                         return <option value={categorie.name} key={categorie.id} className='bg-blue-400'>{categorie.name}</option>;
                                                     }
                                                     return null;
-                                                }) : (
-                                                    <></>
-                                                )}
+                                                })}
                                             </select>
                                         </td>
                                         <td className="px-6 py-3">
@@ -217,16 +221,16 @@ const ProductsDetails = () => {
                                         </td>
                                     </tr>
                                 )) : (
-                                    <tr><td>Vous n'avez pas encore créer de produits</td></tr>
+                                    <tr><td>Vous n'avez pas encore créer de produits avec cette catégorie</td></tr>
                                 )}
                             </tbody>
                         </table>
                     </div>
                     <button className="px-4 py-2 mt-4 bg-blue-400 text-white rounded-md hover:bg-blue-700 focus:outline-none" onClick={(e) => newProduct(e)}>Ajouter</button>
-                </> 
+                </>
             )}
         </div>
     )
-}
+};
 
-export default ProductsDetails;
+export default CategorieFilter;
