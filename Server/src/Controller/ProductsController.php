@@ -129,4 +129,43 @@ class ProductsController extends AbstractController
         $entity->flush();
         return new JsonResponse(['message' => 'Produit supprimé']);
     }
+
+    //Route to get the products of one categorie
+    #[Route('/api/products/{categorie_name}', name: 'list_categorie_products', methods: ['GET'])]
+    public function getProductsCategorie(ProductsRepository $repository, $categorie_name)
+    {
+        //Stocking all products in products
+        $products = $repository->findAll();
+
+        //Settting up an array that will stock the data of each product
+        $data = [];
+
+        //Only if they are no products yet
+        if (!$products)
+        {
+            return new JsonResponse(['message' => "Vous n'avez pas encore créer de produits"]);
+        }
+
+        foreach ($products as $product)
+        {
+            if ($categorie_name === $product->getCategorie())
+            {
+                //Storing the data of each product in data
+                $data[] = [
+                    'id' => $product->getId(),
+                    'name' => $product->getName(),
+                    'description' => $product->getDescription(),
+                    'categorie' => $product->getCategorie(),
+                    'price' => $product->getPrice(),
+                    'created_at' => $product->getCreatedAt(),
+                ];
+            }
+            else
+            {
+                continue;
+            }
+        }
+
+        return new JsonResponse($data);
+    }
 }
